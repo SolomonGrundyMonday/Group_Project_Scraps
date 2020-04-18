@@ -172,14 +172,22 @@ app.get('/friends', function(req, res) {
 	})
 });
 
-app.post('/friends', function(req, res) {
-    var input_friend = req.body.email;
+app.get('/addFriends', function(req, res) {
+    res.render('pages/addFriends',{
+	//local_css:"signin.css",
+	my_title: "Add Friend",
+	little_failure: 0
+    });
+});
+
+app.post('/addFriends/add', function(req, res) {
+    var input_friend = req.body.friendEmail;
     var query = "update users set friends = array_append(friends, (select userid from users where email = '" + input_friend.toString() + "')) where email = '" + inputEmail.toString() + "';";
-    db.result(query)
+    db.any(query)
 	.then( data => {
 	    if (data) {
 		console.log(query);
-		res.render('pages/friends',{
+		res.render('pages/addFriends',{
 		    my_title: "Friends Page",
 		    data: '',
 		    little_failure: 0
@@ -187,7 +195,7 @@ app.post('/friends', function(req, res) {
 	    }else {
 		console.log(query);
 		console.log("Error adding friend.");
-		res.render('pages/friends',{
+		res.render('pages/addFriends',{
 		    my_title: "Friends Page",
 		    data: '',
 		    little_failure: 1
